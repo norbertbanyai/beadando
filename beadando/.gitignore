@@ -1,2 +1,6 @@
-/target
+target/
 TODO
+.project
+.classpath
+.settings/
+.gitignore

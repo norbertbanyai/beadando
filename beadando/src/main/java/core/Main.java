@@ -32,8 +32,6 @@ public class Main {
 		int sum = Calculations.getDayOffsInCurrentYearByEmployeeId(1);
 		System.out.println(Calculations.getSickDaysInCurrentYearByEmployeeId(1));
 		System.out.println(sum);
-		
-		DataLoader.importEmployees("employees.xml");
 	}
 
 }
