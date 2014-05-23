@@ -1,6 +1,5 @@
-beadando
-========
 Jelenlét nyilvántartó program
+========
 A program kezeli a dolgozók(Employee) adatait, valamint a hozzájuk tartozó munkanapokat (WorkSession).
 Lehet új dolgozókat beszúrni, adatot módosítani, törölni. Ugyanezek az eszközök adottak a munkanapokra (lehet állítani, hogy aznap beteg volt, dolgozott, vagy szabadnapja volt).
 A főablakban lehetőség nyílik kiszámolni egy szintén a főablakban kiválasztott dolgozó fizetését adott hónapra.
