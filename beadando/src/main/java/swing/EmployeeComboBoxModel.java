@@ -4,15 +4,11 @@
 package swing;
 
 import java.util.List;
-import java.util.Map;
 
 import javax.swing.ComboBoxModel;
-import javax.swing.DefaultComboBoxModel;
 import javax.swing.JDialog;
-import javax.swing.JFrame;
 import javax.swing.event.ListDataListener;
 
-import org.w3c.dom.views.AbstractView;
 
 import dao.Employee;
 

@@ -20,15 +20,9 @@ public class MonthComboBoxModel implements ComboBoxModel<MonthModelClass> {
 		this.mw = mw;
 		LocalDate ldate = new LocalDate(LocalDate.now());
 		ldate = ldate.minusDays(ldate.getDayOfMonth() - 1);
-		ldate = ldate.minusMonths(ldate.getMonthOfYear() -1 );
-		ldate = ldate.minusYears(1);
-		for (int i = 0; i < 12; i++) {
-			LocalDate date = ldate.plusMonths(i);
-			list.add(new MonthModelClass(new Date(date.toDate().getTime())));
-		}
-		ldate = ldate.plusYears(1);
-		for (int i = 0; i < 12; i++) {
-			LocalDate date = ldate.plusMonths(i);
+		LocalDate date = ldate;
+		for(int i = 0; i < 12 + ldate.getMonthOfYear(); i++) {
+			date = ldate.minusMonths(i);
 			list.add(new MonthModelClass(new Date(date.toDate().getTime())));
 		}
 	}

@@ -6,7 +6,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
-import java.io.StringWriter;
 import java.io.UnsupportedEncodingException;
 import java.math.BigDecimal;
 import java.sql.Date;
@@ -15,7 +14,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.sql.rowset.spi.XmlWriter;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
@@ -27,21 +25,51 @@ import org.joda.time.LocalDate;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
+import static core.Main.logger;
 
 import dao.Employee;
 
+/**
+ * The core of the class {@code DataLoader}. Provides the XML handling.
+ */
 public class XMLHandler {
-	private static String XML_NAME = "employees.xml";
+	
+	/**
+	 * The XML's path.
+	 */
+	private static String XML_NAME;
 
+	/**
+	 * Class representing a handler for {@code Employee}'s objects in an XML file.
+	 * 
+	 * @see DefaultHandler
+	 * @see XMLHandler#loadEmployeesFromXML(String)
+	 */
 	private static final class EmployeeXMLInputHandler extends DefaultHandler {
+		/**
+		 * List of employees.
+		 */
 		private List<Employee> employees;
+		
+		/**
+		 * The actual position of the parsing.
+		 */
 		private String actualPosition;
+		
+		/**
+		 * A map that contains the values for the employees.
+		 * <p>For example this pair: id, 100 or this pair: salary, 5000</p>
+		 */
 		private Map<String, String> m = new HashMap<String, String>();
 
+		/**
+		 * Returns the list of the employees read from the XML file.
+		 * @return the employees' list
+		 */
 		public List<Employee> getEmployeeList() {
 			return employees;
 		}
-
+		
 		@Override
 		public void startDocument() throws SAXException {
 			employees = new ArrayList<Employee>();
@@ -72,6 +100,14 @@ public class XMLHandler {
 		}
 	}
 
+	/**
+	 * Reads an XML file, and puts every read object into {@link EmployeeXMLInputHandler#employees}.
+	 * <p>After parsing the document, returns the list of the employees.</p>
+	 * @see EmployeeXMLInputHandler
+	 * 
+	 * @param xmlPath the absolute path of the XML file we want to read from
+	 * @return the list of the employees which are in the XML file
+	 */
 	public static List<Employee> loadEmployeesFromXML(String xmlPath) {
 		XMLHandler.XML_NAME = xmlPath;
 		SAXParserFactory spf = SAXParserFactory.newInstance();
@@ -82,17 +118,23 @@ public class XMLHandler {
 			parser.parse(new FileInputStream(XML_NAME), h);
 			l = ((EmployeeXMLInputHandler) h).getEmployeeList();
 		} catch (ParserConfigurationException e) {
-			e.printStackTrace();
+			logger.error("Error wile parsing XML:" + e.getMessage(), e);
 		} catch (SAXException e) {
-			e.printStackTrace();
+			logger.error("Error wile parsing XML:" + e.getMessage(), e);
 		} catch (FileNotFoundException e) {
-			e.printStackTrace();
+			logger.error("Error wile parsing XML:" + e.getMessage(), e);
 		} catch (IOException e) {
-			e.printStackTrace();
+			logger.error("Error wile parsing XML:" + e.getMessage(), e);
 		}
 		return l;
 	}
 
+	/**
+	 * Writes the given {@code Employee} list into an XML file.
+	 * 
+	 * @param xmlPath the absolute path of the XML file we want to write to
+	 * @param l the list of the employees we want to write to {@code xmlPath}
+	 */
 	public static void loadEmployeesToXML(String xmlPath, List<Employee> l) {
 		XMLHandler.XML_NAME = xmlPath;
 		try {
@@ -147,13 +189,11 @@ public class XMLHandler {
 				xmlsw.close();
 			}
 		} catch (XMLStreamException e) {
-			e.printStackTrace();
+			logger.error("Error while writing into an XML file:" + e.getMessage(), e);
 		} catch (UnsupportedEncodingException e) {
-			e.printStackTrace();
+			logger.error("Error while writing into an XML file:" + e.getMessage(), e);
 		} catch (FileNotFoundException e) {
-			e.printStackTrace();
+			logger.error("Error while writing into an XML file:" + e.getMessage(), e);
 		}
-
 	}
-
 }

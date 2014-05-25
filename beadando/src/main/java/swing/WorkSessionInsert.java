@@ -5,8 +5,6 @@ import java.awt.Color;
 import java.awt.FlowLayout;
 
 import javax.swing.ButtonGroup;
-import javax.swing.ButtonModel;
-import javax.swing.DefaultListModel;
 import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JFormattedTextField;
@@ -17,16 +15,15 @@ import javax.swing.GroupLayout;
 import javax.swing.GroupLayout.Alignment;
 import javax.swing.JLabel;
 
-import java.awt.Dimension;
 
 import javax.swing.JTextField;
 
+import dao.AlreadyReachedFifteenSickDays;
+import dao.AlreadyReachedThirtyDayOffs;
 import dao.Employee;
 import dao.EmployeeDAO;
 import dao.EmployeeDAOFactory;
 import dao.EmployeeNotFoundException;
-import dao.ExistingEmployeeException;
-import dao.ExistingWorkSessionException;
 import dao.TooMuchWorkOnADayException;
 import dao.WorkSession;
 import dao.WorkSessionDAO;
@@ -34,12 +31,10 @@ import dao.WorkSessionDAOFactory;
 
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
-import java.math.BigDecimal;
 import java.sql.Date;
 import java.text.SimpleDateFormat;
 
 import javax.swing.LayoutStyle.ComponentPlacement;
-import javax.swing.JList;
 import javax.swing.JRadioButton;
 
 public class WorkSessionInsert extends JDialog {
@@ -218,7 +213,6 @@ public class WorkSessionInsert extends JDialog {
 						} else {
 							return;
 						}
-						System.out.println(type);
 						WorkSessionDAOFactory wdaof = WorkSessionDAOFactory.newInstance();
 						wdaof.setType(WorkSessionDAOFactory.Type.JDBC);
 						WorkSessionDAO wdao = wdaof.newWorkSessionDAO();
@@ -227,7 +221,13 @@ public class WorkSessionInsert extends JDialog {
 							wdao.createWorkSession(ws);
 							JOptionPane.showMessageDialog(WorkSessionInsert.this, "Insert was successful");
 							WorkSessionInsert.this.dispose();
-						} catch (ExistingWorkSessionException | TooMuchWorkOnADayException e) {
+						} catch (TooMuchWorkOnADayException e) {
+							JOptionPane.showMessageDialog(WorkSessionInsert.this,
+									e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+						} catch (AlreadyReachedThirtyDayOffs e) {
+							JOptionPane.showMessageDialog(WorkSessionInsert.this,
+									e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+						} catch (AlreadyReachedFifteenSickDays e) {
 							JOptionPane.showMessageDialog(WorkSessionInsert.this,
 									e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
 						}

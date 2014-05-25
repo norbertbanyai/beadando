@@ -88,6 +88,9 @@ public class WorkSessionDelete extends JDialog {
 				JButton okButton = new JButton("Delete");
 				okButton.addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent e1) {
+						if (ws == null) {
+							return;
+						}
 						WorkSessionDAOFactory wdaof = WorkSessionDAOFactory.newInstance();
 						wdaof.setType(WorkSessionDAOFactory.Type.JDBC);
 						WorkSessionDAO wdao = wdaof.newWorkSessionDAO();

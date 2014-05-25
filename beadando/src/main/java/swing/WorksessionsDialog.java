@@ -1,7 +1,6 @@
 package swing;
 
 import java.awt.BorderLayout;
-import java.awt.FlowLayout;
 
 import javax.swing.JButton;
 import javax.swing.JDialog;
@@ -11,26 +10,43 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.JTable;
 
 import dao.Employee;
-import dao.EmployeeDAO;
-import dao.EmployeeDAOFactory;
+import dao.PersistentLayerException;
 import dao.WorkSession;
 import dao.WorkSessionDAO;
 import dao.WorkSessionDAOFactory;
+import dao.impl.ConnectionHelper;
 
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
+import java.io.IOException;
+import java.sql.Date;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 
-import javax.swing.SwingConstants;
 import javax.swing.GroupLayout;
 import javax.swing.GroupLayout.Alignment;
 import javax.swing.LayoutStyle.ComponentPlacement;
 
+import org.joda.time.LocalDate;
+
 public class WorksessionsDialog extends JDialog {
 
+	enum Type {
+		YEAR,
+		YEARMONTH,
+		WEEK,
+		DEFAULT
+	}
+	private Employee employee;
+	private List<WorkSession> list;
+	private Type type;
+	private Date date;
+	
 	private final JPanel contentPanel = new JPanel();
 	private JTable table;
-	private List<WorkSession> list;
 	private JButton okButton;
 	private JButton btnUpdateSelectedRow;
 	private JButton btnDeleteSelectedRow;
@@ -40,7 +56,7 @@ public class WorksessionsDialog extends JDialog {
 	 */
 	public static void main(String[] args) {
 		try {
-			WorksessionsDialog dialog = new WorksessionsDialog();
+			WorksessionsDialog dialog = new WorksessionsDialog(null, Type.DEFAULT, null, null);
 			dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 			dialog.setVisible(true);
 		} catch (Exception e) {
@@ -51,34 +67,172 @@ public class WorksessionsDialog extends JDialog {
 	/**
 	 * Create the dialog.
 	 */
-	public WorksessionsDialog() {
+	public WorksessionsDialog(List<WorkSession> l, Type type, Employee emp, Date date) {
 		setBounds(100, 100, 606, 376);
 		getContentPane().setLayout(new BorderLayout());
 		contentPanel.setBorder(new EmptyBorder(5, 5, 5, 5));
 		getContentPane().add(contentPanel, BorderLayout.CENTER);
 		contentPanel.setLayout(new BorderLayout(0, 0));
 		{
+			this.type = type;
+			this.employee = emp;
+			this.date = date;
 			table = new JTable();
-			WorkSessionDAOFactory wdaof = WorkSessionDAOFactory.newInstance();
-			wdaof.setType(WorkSessionDAOFactory.Type.JDBC);
-			WorkSessionDAO wdao = wdaof.newWorkSessionDAO();
-			list = wdao.findAllWorkSession();
-			table.setModel(new WorkSessionJTableModel(list));
-			contentPanel.add(table, BorderLayout.CENTER);
-			contentPanel.add(new JScrollPane(table));
+			switch (type) {
+			case YEAR:
+				List<WorkSession> listTemp = new ArrayList<>();
+				try(PreparedStatement pstmt = ConnectionHelper.getConnection().prepareStatement("select * from worksessions where to_char(session_date, 'YYYY') = to_char(sysdate, 'YYYY') and employee_id = ?")) {
+					pstmt.setInt(1, emp.getId());
+					try(ResultSet rset = pstmt.executeQuery()) {
+						while (rset.next()) {
+							listTemp.add(new WorkSession(rset.getInt("worksession_id"), rset.getInt("employee_id"),
+							rset.getDate("session_date"), rset.getShort("duration"), rset.getString("type")));
+						}
+					}
+				} catch (SQLException | IOException e) {
+					throw new PersistentLayerException(e);
+				}
+				list = listTemp;
+				break;
+			case YEARMONTH:
+				List<WorkSession> listTemp2 = new ArrayList<>();
+				try(PreparedStatement pstmt = ConnectionHelper.getConnection().prepareStatement("select * from worksessions where to_char(session_date, 'YYYY.MM') = to_char(?, 'YYYY.MM') and employee_id = ?")) {
+					pstmt.setDate(1, this.date);
+					pstmt.setInt(2, emp.getId());
+					try(ResultSet rset = pstmt.executeQuery()) {
+						while (rset.next()) {
+							listTemp2.add(new WorkSession(rset.getInt("worksession_id"), rset.getInt("employee_id"),
+							rset.getDate("session_date"), rset.getShort("duration"), rset.getString("type")));
+						}
+					}
+				} catch (SQLException | IOException e) {
+					throw new PersistentLayerException(e);
+				}
+				list = listTemp2;
+				break;
+			case WEEK:
+				List<WorkSession> listTemp3 = new ArrayList<>();
+				try(PreparedStatement pstmt = ConnectionHelper.getConnection().prepareStatement("select * from worksessions where session_date between ? and ? and employee_id = ?")) {
+					LocalDate start = new LocalDate(this.date);
+					start = start.minusDays(start.getDayOfWeek() - 1);
+					LocalDate end = start.plusWeeks(1);
+					end = end.minusDays(1);
+					pstmt.setDate(1, new Date(start.toDate().getTime()));
+					pstmt.setDate(2, new Date(end.toDate().getTime()));
+					pstmt.setInt(3, emp.getId());
+					try(ResultSet rset = pstmt.executeQuery()) {
+						while (rset.next()) {
+							listTemp3.add(new WorkSession(rset.getInt("worksession_id"), rset.getInt("employee_id"),
+							rset.getDate("session_date"), rset.getShort("duration"), rset.getString("type")));
+						}
+					}
+				} catch (SQLException | IOException e) {
+					throw new PersistentLayerException(e);
+				}
+				list = listTemp3;
+				break;
+			case DEFAULT:
+				break;
+
+			default:
+				break;
+			}
+			if (type.equals(Type.DEFAULT)) {
+				WorkSessionDAOFactory wdaof = WorkSessionDAOFactory.newInstance();
+				wdaof.setType(WorkSessionDAOFactory.Type.JDBC);
+				WorkSessionDAO wdao = wdaof.newWorkSessionDAO();
+				list = wdao.findAllWorkSession();
+				table.setModel(new WorkSessionJTableModel(list));
+				contentPanel.add(table, BorderLayout.CENTER);
+				contentPanel.add(new JScrollPane(table));
+			} else {
+//				list = l;
+				table.setModel(new WorkSessionJTableModel(list));
+				contentPanel.add(table, BorderLayout.CENTER);
+				contentPanel.add(new JScrollPane(table));
+				okButton = new JButton("Refresh");
+//				okButton.setEnabled(false);
+			}
+			
 		}
 		{
 			JPanel buttonPane = new JPanel();
 			getContentPane().add(buttonPane, BorderLayout.SOUTH);
 			{
-				okButton = new JButton("Refresh");
+				if (okButton == null) {
+					okButton = new JButton("Refresh");
+				}
 				okButton.addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent arg0) {
-						WorkSessionDAOFactory wdaof = WorkSessionDAOFactory.newInstance();
-						wdaof.setType(WorkSessionDAOFactory.Type.JDBC);
-						WorkSessionDAO wdao = wdaof.newWorkSessionDAO();
-						list = wdao.findAllWorkSession();
-						table.setModel(new WorkSessionJTableModel(list));
+						switch (WorksessionsDialog.this.type) {
+						case YEAR:
+							List<WorkSession> listTemp = new ArrayList<>();
+							try(PreparedStatement pstmt = ConnectionHelper.getConnection().prepareStatement("select * from worksessions where to_char(session_date, 'YYYY') = to_char(sysdate, 'YYYY') and employee_id = ?")) {
+								pstmt.setInt(1, WorksessionsDialog.this.employee.getId());
+								try(ResultSet rset = pstmt.executeQuery()) {
+									while (rset.next()) {
+										listTemp.add(new WorkSession(rset.getInt("worksession_id"), rset.getInt("employee_id"),
+										rset.getDate("session_date"), rset.getShort("duration"), rset.getString("type")));
+									}
+								}
+							} catch (SQLException | IOException e) {
+								throw new PersistentLayerException(e);
+							}
+							list = listTemp;
+							break;
+						case YEARMONTH:
+							List<WorkSession> listTemp2 = new ArrayList<>();
+							try(PreparedStatement pstmt = ConnectionHelper.getConnection().prepareStatement("select * from worksessions where to_char(session_date, 'YYYY.MM') = to_char(?, 'YYYY.MM') and employee_id = ?")) {
+								pstmt.setDate(1, WorksessionsDialog.this.date);
+								pstmt.setInt(2, WorksessionsDialog.this.employee.getId());
+								try(ResultSet rset = pstmt.executeQuery()) {
+									while (rset.next()) {
+										listTemp2.add(new WorkSession(rset.getInt("worksession_id"), rset.getInt("employee_id"),
+										rset.getDate("session_date"), rset.getShort("duration"), rset.getString("type")));
+									}
+								}
+							} catch (SQLException | IOException e) {
+								throw new PersistentLayerException(e);
+							}
+							list = listTemp2;
+							break;
+						case WEEK:
+							List<WorkSession> listTemp3 = new ArrayList<>();
+							try(PreparedStatement pstmt = ConnectionHelper.getConnection().prepareStatement("select * from worksessions where session_date between ? and ? and employee_id = ?")) {
+								LocalDate start = new LocalDate(WorksessionsDialog.this.date);
+								start = start.minusDays(start.getDayOfWeek() - 1);
+								LocalDate end = start.plusWeeks(1);
+								end = end.minusDays(1);
+								pstmt.setDate(1, new Date(start.toDate().getTime()));
+								pstmt.setDate(2, new Date(end.toDate().getTime()));
+								pstmt.setInt(3, WorksessionsDialog.this.employee.getId());
+								try(ResultSet rset = pstmt.executeQuery()) {
+									while (rset.next()) {
+										listTemp3.add(new WorkSession(rset.getInt("worksession_id"), rset.getInt("employee_id"),
+										rset.getDate("session_date"), rset.getShort("duration"), rset.getString("type")));
+									}
+								}
+							} catch (SQLException | IOException e) {
+								throw new PersistentLayerException(e);
+							}
+							list = listTemp3;
+							break;
+						case DEFAULT:
+							break;
+
+						default:
+							break;
+						}
+						if (WorksessionsDialog.this.type.equals(Type.DEFAULT)) {
+							WorkSessionDAOFactory wdaof = WorkSessionDAOFactory.newInstance();
+							wdaof.setType(WorkSessionDAOFactory.Type.JDBC);
+							WorkSessionDAO wdao = wdaof.newWorkSessionDAO();
+							list = wdao.findAllWorkSession();
+							table.setModel(new WorkSessionJTableModel(list));
+						} else {
+							table.setModel(new WorkSessionJTableModel(list));
+						}
+						
 					}
 				});
 				okButton.setActionCommand("OK");

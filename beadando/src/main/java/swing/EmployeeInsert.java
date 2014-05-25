@@ -69,14 +69,12 @@ public class EmployeeInsert extends JDialog {
 		
 		textId = new JTextField();
 		textId.setToolTipText("must be a number(eg. 1 or 101)");
-		textId.setText("777");
 		textId.setColumns(10);
 		
 		JLabel labelName = new JLabel("name");
 		
 		textName = new JTextField();
 		textName.setToolTipText("Must be a human name (eg Arnold Schwarzenegger)");
-		textName.setText("name");
 		textName.setColumns(10);
 		
 		JLabel labelHireDate = new JLabel("hire date");

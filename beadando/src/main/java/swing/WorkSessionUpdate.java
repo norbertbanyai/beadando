@@ -16,23 +16,21 @@ import javax.swing.GroupLayout;
 import javax.swing.GroupLayout.Alignment;
 import javax.swing.JLabel;
 
-import java.awt.Dimension;
-
 import javax.swing.JTextField;
 
+import dao.AlreadyReachedFifteenSickDays;
+import dao.AlreadyReachedThirtyDayOffs;
 import dao.Employee;
 import dao.EmployeeDAO;
 import dao.EmployeeDAOFactory;
 import dao.EmployeeNotFoundException;
-import dao.ExistingEmployeeException;
-import dao.PersistentLayerException;
+import dao.TooMuchWorkOnADayException;
 import dao.WorkSession;
 import dao.WorkSessionDAO;
 import dao.WorkSessionDAOFactory;
 
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
-import java.math.BigDecimal;
 import java.sql.Date;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -217,6 +215,9 @@ public class WorkSessionUpdate extends JDialog {
 				JButton okButton = new JButton("Update");
 				okButton.addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent arg0) {
+						if (ws == null) {
+							return;
+						}
 						int emp_id;
 						Date date;
 						int duration;
@@ -267,13 +268,22 @@ public class WorkSessionUpdate extends JDialog {
 						} else {
 							return;
 						}
+						
 						WorkSession w = new WorkSession(ws.getId(), emp_id, date, (short)duration, type);
+						
 						WorkSessionDAOFactory wdaof = WorkSessionDAOFactory.newInstance();
 						wdaof.setType(WorkSessionDAOFactory.Type.JDBC);
 						WorkSessionDAO wdao = wdaof.newWorkSessionDAO();
-						wdao.updateWorkSession(w);
-						JOptionPane.showMessageDialog(WorkSessionUpdate.this, "Update was successful");
-						WorkSessionUpdate.this.dispose();
+						try {
+							wdao.updateWorkSession(w);
+							JOptionPane.showMessageDialog(WorkSessionUpdate.this, "Update was successful");
+							WorkSessionUpdate.this.dispose();
+						} catch (AlreadyReachedThirtyDayOffs
+								| AlreadyReachedFifteenSickDays
+								| TooMuchWorkOnADayException e) {
+							JOptionPane.showMessageDialog(WorkSessionUpdate.this,
+									e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+						}
 					}
 				});
 				okButton.setActionCommand("OK");

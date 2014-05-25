@@ -5,35 +5,44 @@ import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
-import org.joda.time.LocalDate;
-//import java.util.List;
-//import java.util.Map;
-//import java.util.Map.Entry;
-//import java.util.Random;
-//import java.util.UUID;
-//
-//import org.joda.time.DateTime;
-//
-//import core.Calendar;
-
+/**
+ * Class for representing an employee.
+ */
 public class Employee {
+	/**
+	 * The employee's unique ID.
+	 */
 	private int id;
-	private String name;
-	private Date hireDate;
-	private BigDecimal salary;
-	private String department;
-
-	public Employee(String name, int age, int salary) {
-		this(1, name, new Date(new LocalDate(2010, 3, 7).toDate().getTime()), new BigDecimal(salary), "IT");
-	}
-	
 	
 	/**
-	 * @param id
-	 * @param name
-	 * @param hireDate
-	 * @param salary
-	 * @param department
+	 * The employee's name.
+	 */
+	private String name;
+	
+	/**
+	 * The employee's hire date.
+	 */
+	private Date hireDate;
+	
+	/**
+	 * The employee's base salary.
+	 * Counted as 20 days per month, and 8 hours worked per day.
+	 */
+	private BigDecimal salary;
+	
+	/**
+	 * The name of the employee's department.
+	 */
+	private String department;
+	
+	/**
+	 * Constructor for the {@code Employee} class.
+	 * 
+	 * @param id the employee's id
+	 * @param name the employee's name
+	 * @param hireDate the employee's hire date
+	 * @param salary the employee's salary
+	 * @param department the name of the employee's department
 	 */
 	public Employee(int id, String name, Date hireDate, BigDecimal salary,
 			String department) {
@@ -47,7 +56,9 @@ public class Employee {
 
 
 	/**
-	 * @return the name
+	 * Returns the employee's name.
+	 * 
+	 * @return the employee's name
 	 */
 	public String getName() {
 		return name;
@@ -55,7 +66,9 @@ public class Employee {
 
 
 	/**
-	 * @param name the name to set
+	 * Sets the employee's name.
+	 * 
+	 * @param name the name to set to the employee
 	 */
 	public void setName(String name) {
 		this.name = name;
@@ -63,7 +76,9 @@ public class Employee {
 
 
 	/**
-	 * @return the hireDate
+	 * Returns the employee's hire date.
+	 * 
+	 * @return the employee's hire date
 	 */
 	public Date getHireDate() {
 		return hireDate;
@@ -71,7 +86,9 @@ public class Employee {
 
 
 	/**
-	 * @param hireDate the hireDate to set
+	 * Sets the employee's hire date.
+	 * 
+	 * @param hireDate the hire date to set to the employee
 	 */
 	public void setHireDate(Date hireDate) {
 		this.hireDate = hireDate;
@@ -79,7 +96,9 @@ public class Employee {
 
 
 	/**
-	 * @return the salary
+	 * Returns the employee's salary.
+	 * 
+	 * @return the employee's salary
 	 */
 	public BigDecimal getSalary() {
 		return salary;
@@ -87,7 +106,9 @@ public class Employee {
 
 
 	/**
-	 * @param salary the salary to set
+	 * Sets the employee's salary.
+	 * 
+	 * @param salary the salary to set to the employee
 	 */
 	public void setSalary(BigDecimal salary) {
 		this.salary = salary;
@@ -95,7 +116,9 @@ public class Employee {
 
 
 	/**
-	 * @return the department
+	 * Returns the name of the employee's department.
+	 * 
+	 * @return the name of the employee's department.
 	 */
 	public String getDepartment() {
 		return department;
@@ -103,7 +126,9 @@ public class Employee {
 
 
 	/**
-	 * @param department the department to set
+	 * Sets the name of the employee's department.
+	 * 
+	 * @param department the name to set to the employee's department
 	 */
 	public void setDepartment(String department) {
 		this.department = department;
@@ -111,17 +136,19 @@ public class Employee {
 
 
 	/**
-	 * @return the id
+	 * Returns the employee's id.
+	 * 
+	 * @return the employee's id
 	 */
 	public int getId() {
 		return id;
 	}
 
-
-	/* (non-Javadoc)
-	 * @see java.lang.Object#hashCode()
+	/**
+	 * Returns a hash code value for this object.
+	 * 
+	 * @return a hash code value for this object.
 	 */
-	@Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
@@ -130,10 +157,13 @@ public class Employee {
 	}
 
 
-	/* (non-Javadoc)
-	 * @see java.lang.Object#equals(java.lang.Object)
+	/**
+	 * Compares this {@code Employee} with with the specified object. Two {@code Employee} objects are
+	 * considered equal if and only if their ids are equal.
+	 * 
+	 * @param obj the object to compare to
+	 * @return <code>true</code> if the objects are equal, <code>false</code> otherwise
 	 */
-	@Override
 	public boolean equals(Object obj) {
 		if (this == obj) {
 			return true;
@@ -151,16 +181,25 @@ public class Employee {
 		return true;
 	}
 
-
-	/* (non-Javadoc)
-	 * @see java.lang.Object#toString()
+	/**
+	 * Returns the string representation of this employee.
+	 * 
+	 * @return the string representation of this employee in the form
+	 * 			<span><em>id</em><code> </code><em>name</em></span>
 	 */
 	@Override
 	public String toString() {
 		return id + " " + name;
 	}
 
-	
+	/**
+	 * Converts the given {@code Employee} into a form of {@code PreparedStatement}.
+	 * @see EmployeeDAO
+	 * 
+	 * @param pstmt the {@code PreparedStatement} we want to write the employee's data into
+	 * @param e the employee we want to convert into a {@code PreparedStatement}
+	 * @throws SQLException if something happens during the conversion
+	 */
 	public static void employeeToPreparedStatement(PreparedStatement pstmt, Employee e) throws SQLException {
 		pstmt.setInt(1, e.id);
 		pstmt.setString(2, e.name);

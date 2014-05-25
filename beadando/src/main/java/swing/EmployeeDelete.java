@@ -1,6 +1,5 @@
 package swing;
 
-import java.awt.BorderLayout;
 import java.awt.FlowLayout;
 
 import javax.swing.JButton;
@@ -70,6 +69,9 @@ public class EmployeeDelete extends JDialog {
 				JButton okButton = new JButton("Delete");
 				okButton.addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent e1) {
+						if (e == null) {
+							return;
+						}
 						EmployeeDAOFactory edaof = EmployeeDAOFactory.newInstance();
 						edaof.setType(EmployeeDAOFactory.Type.JDBC);
 						EmployeeDAO edao = edaof.newEmployeeDAO();

@@ -1,6 +1,3 @@
-/**
- * 
- */
 package dao.impl;
 
 import java.io.IOException;
@@ -17,17 +14,27 @@ import dao.EmployeeDAO;
 import dao.EmployeeNotFoundException;
 import dao.ExistingEmployeeException;
 import dao.PersistentLayerException;
+import static core.Main.logger;
 
 /**
- * @author bnorbi
- *
+ * A JDBC implementation of the {@link EmployeeDAO} interface.
  */
 public class JDBCEmployeeDAOImpl implements EmployeeDAO{
+	
+	/**
+	 * String that is used by a {@code PreparedStatement} to insert an {@code Employee} into the database.
+	 */
 	private static final String INSERT_INTO_EMPLOYEES = "insert into employees values(?, ?, ?, ?, ?)";
+	
+	/**
+	 * String that is used by a {@code Statement} to select all {@code Employee} from the database.
+	 */
 	private static final String FIND_ALL_EMPLOYEES = "select employee_id, name, hire_date, salary, department_name from employees ";
+	
+	/**
+	 * String that is used by a {@code PreparedStatement} also expands the {@link #FIND_ALL_EMPLOYEES} to search by a specific employee_id.
+	 */
 	private static final String FIND_EMPLOYEE_BY_ID = FIND_ALL_EMPLOYEES + "where employee_id = ?";
-	private static final String FIND_EMPLOYEES_BY_DEPARTMENT = FIND_ALL_EMPLOYEES + "where department_name = ?";
-	private static final String FIND_EMPLOYEES_BY_NAME = FIND_ALL_EMPLOYEES + "where lower(name) like ?";
 
 
 	@Override
@@ -64,24 +71,6 @@ public class JDBCEmployeeDAOImpl implements EmployeeDAO{
 	}
 
 	@Override
-	public List<Employee> findEmployeesByDepartment(String depName) {
-		List<Employee> l = new ArrayList<>();
-		try(PreparedStatement pstmt = ConnectionHelper.getConnection().prepareStatement(FIND_EMPLOYEES_BY_DEPARTMENT)) {
-			pstmt.setString(1, depName);
-			try(ResultSet rset = pstmt.executeQuery()) {
-				while (rset.next()) {
-					l.add(new Employee(rset.getInt("employee_id"), rset.getString("name"),
-							rset.getDate("hire_date"), rset.getBigDecimal("salary"), rset.getString("department_name")));
-				}
-			}
-		} catch (SQLException | IOException e) {
-			throw new PersistentLayerException(e);
-		}
-		return l;
-		
-	}
-
-	@Override
 	public void createEmployee(Employee e) throws ExistingEmployeeException {
 		try(PreparedStatement pstmt = ConnectionHelper.getConnection().prepareStatement(FIND_EMPLOYEE_BY_ID)) {
 			pstmt.setInt(1, e.getId());
@@ -99,23 +88,6 @@ public class JDBCEmployeeDAOImpl implements EmployeeDAO{
 		} catch (SQLException | IOException e1) {
 			throw new PersistentLayerException(e1);
 		}
-	}
-
-	@Override
-	public List<Employee> findEmployeesByName(String name) {
-		List<Employee> l = new ArrayList<>();
-		try(PreparedStatement pstmt = ConnectionHelper.getConnection().prepareStatement(FIND_EMPLOYEES_BY_NAME)) {
-			pstmt.setString(1, "%" + name.toLowerCase() + "%");
-			try(ResultSet rset = pstmt.executeQuery()) {
-				while (rset.next()) {
-					l.add(new Employee(rset.getInt("employee_id"), rset.getString("name"),
-							rset.getDate("hire_date"), rset.getBigDecimal("salary"), rset.getString("department_name")));
-				}
-			}
-		} catch (SQLException | IOException e) {
-			throw new PersistentLayerException(e);
-		}
-		return l;
 	}
 
 	@Override

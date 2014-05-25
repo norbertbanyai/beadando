@@ -4,28 +4,66 @@ import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
+import static core.Main.logger;
 
+/**
+ * Class for representing a work session.
+ */
 public class WorkSession {
 	
+	/**
+	 * The types of the sessions.
+	 */
 	public enum SessionTypes {
+		/**
+		 * The employee worked in this session.
+		 */
 		WORK,
+		/**
+		 * The employee was sick in this session.
+		 */
 		SICKNESS,
+		/**
+		 * The employee had a day off in this session.
+		 */
 		DAY_OFF,
-		NOT_ALLOWED_TO_WORK //cuz of sickness or on day offs
 	}
 	
+	/**
+	 * The id of the session.
+	 */
 	private int id;
+	
+	/**
+	 * This session belongs to the {@code Employee} with the id <code>=</code> {@code employee_id}.
+	 */
 	private int employee_id;
+	
+	/**
+	 * The date of the session.
+	 */
 	private Date date;
+	
+	/**
+	 * The duration of the session.
+	 * In hours(0..12).
+	 */
 	private short duration;
+	
+	/**
+	 * The type of this session.
+	 * @see SessionTypes
+	 */
 	private SessionTypes type;
 	
 	/**
-	 * @param id
-	 * @param employee_id
-	 * @param date
-	 * @param duration
-	 * @param type
+	 * Constructor for the class {@code WorkSession}.
+	 * 
+	 * @param id the id of the {@code WorkSession}
+	 * @param employee_id {@code WorkSession} belongs to the {@code Employee} with the id <code>=</code> {@code employee_id}
+	 * @param date the date of the session
+	 * @param duration the duration of the session
+	 * @param type the type of the session given as a string, then converted into a {@link SessionTypes}
 	 */
 	public WorkSession(int id, int employee_id, Date date, short duration,
 			String type) {
@@ -45,33 +83,41 @@ public class WorkSession {
 			this.type = SessionTypes.DAY_OFF;
 			break;
 		default:
-			this.type = SessionTypes.NOT_ALLOWED_TO_WORK;
+			logger.error("Unknown session type has been given to the constructor of WorkSession" + type.toUpperCase());
 			break;
 		}
 	}
 
 	/**
-	 * @return the employee_id
+	 * Returns the session owner employee's id.
+	 * 
+	 * @return the session owner employee's id
 	 */
 	public int getEmployee_id() {
 		return employee_id;
 	}
 
 	/**
-	 * @param employee_id the employee_id to set
+	 * Sets the session owner's id.
+	 * 
+	 * @param employee_id the owner's id
 	 */
 	public void setEmployee_id(int employee_id) {
 		this.employee_id = employee_id;
 	}
 
 	/**
-	 * @return the date
+	 * Returns the date of the session.
+	 * 
+	 * @return the date of the session
 	 */
 	public Date getDate() {
 		return date;
 	}
 
 	/**
+	 * Sets the date of the session.
+	 * 
 	 * @param date the date to set
 	 */
 	public void setDate(Date date) {
@@ -79,13 +125,17 @@ public class WorkSession {
 	}
 
 	/**
-	 * @return the duration
+	 * Returns the {@code WorkSession}'s duration.
+	 * 
+	 * @return the duration of the {@code WorkSession}
 	 */
 	public short getDuration() {
 		return duration;
 	}
 
 	/**
+	 * Sets the duration of this {@code WorkSession}.
+	 * 
 	 * @param duration the duration to set
 	 */
 	public void setDuration(short duration) {
@@ -93,13 +143,17 @@ public class WorkSession {
 	}
 
 	/**
-	 * @return the type
+	 * Returns this {@code WorkSession}'s type.
+	 * 
+	 * @return the type of the session
 	 */
 	public SessionTypes getType() {
 		return type;
 	}
 
 	/**
+	 * Sets this {@code WorkSession}'s type.
+	 * 
 	 * @param type the type to set
 	 */
 	public void setType(SessionTypes type) {
@@ -107,16 +161,19 @@ public class WorkSession {
 	}
 
 	/**
-	 * @return the id
+	 * Returns the {@code WorkSession}'s id.
+	 * 
+	 * @return the id of the {@code WorkSession}
 	 */
 	public int getId() {
 		return id;
 	}
 
-	/* (non-Javadoc)
-	 * @see java.lang.Object#hashCode()
+	/**
+	 * Returns the hash value of this object.
+	 * 
+	 * @return the hash value of this object
 	 */
-	@Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
@@ -124,10 +181,13 @@ public class WorkSession {
 		return result;
 	}
 
-	/* (non-Javadoc)
-	 * @see java.lang.Object#equals(java.lang.Object)
+	/**
+	 * Compares this {@code WorkSession} with with the specified object. Two {@code WorkSession} objects are
+	 * considered equal if and only if their ids are equal.
+	 * 
+	 * @param obj the object to compare to
+	 * @return <code>true</code> if the objects are equal, <code>false</code> otherwise
 	 */
-	@Override
 	public boolean equals(Object obj) {
 		if (this == obj) {
 			return true;
@@ -145,10 +205,12 @@ public class WorkSession {
 		return true;
 	}
 
-	/* (non-Javadoc)
-	 * @see java.lang.Object#toString()
+	/**
+	 * Returns the string representation of this {@code WorkSession}.
+	 * 
+	 * @return the string representation of this {@code WorkSession} in the form
+	 * 			<span><em>id=</em><code> id </code><em>employee </em><code>= employoo's name date type</code></span>
 	 */
-	@Override
 	public String toString() {
 		EmployeeDAOFactory edaof = EmployeeDAOFactory.newInstance();
 		edaof.setType(EmployeeDAOFactory.Type.JDBC);
@@ -162,6 +224,14 @@ public class WorkSession {
 		return "id="+id + " employee = " + e.getName() + " " + date + " " + type;
 	}
 	
+	/**
+	 * Converts the given {@code WorkSession} into a form of {@code PreparedStatement}.
+	 * @see WorkSessionDAO
+	 * 
+	 * @param pstmt the {@code PreparedStatement} we want to write the session's data into
+	 * @param ws the session we want to convert into a {@code PreparedStatement}
+	 * @throws SQLException if something happens during the conversion
+	 */
 	public static void workSessionToPreparedStatement(PreparedStatement pstmt, WorkSession ws) throws SQLException {
 		pstmt.setInt(1, ws.employee_id);
 		pstmt.setDate(2, ws.date);

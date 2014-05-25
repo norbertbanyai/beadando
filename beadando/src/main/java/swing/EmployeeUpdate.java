@@ -6,7 +6,6 @@ import java.awt.FlowLayout;
 
 import javax.swing.JButton;
 import javax.swing.JDialog;
-import javax.swing.JFormattedTextField;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
@@ -14,21 +13,17 @@ import javax.swing.GroupLayout;
 import javax.swing.GroupLayout.Alignment;
 import javax.swing.JLabel;
 
-import java.awt.Dimension;
 
 import javax.swing.JTextField;
 
 import dao.Employee;
 import dao.EmployeeDAO;
 import dao.EmployeeDAOFactory;
-import dao.ExistingEmployeeException;
 import dao.PersistentLayerException;
 
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import java.math.BigDecimal;
-import java.sql.Date;
-import java.text.SimpleDateFormat;
 
 import javax.swing.JComboBox;
 
@@ -75,7 +70,6 @@ public class EmployeeUpdate extends JDialog {
 		
 		textName = new JTextField();
 		textName.setToolTipText("Must be a human name (eg Arnold Schwarzenegger)");
-		textName.setText("name");
 		textName.setColumns(10);
 		
 		JLabel labelSalary = new JLabel("salary");
@@ -155,6 +149,9 @@ public class EmployeeUpdate extends JDialog {
 				JButton okButton = new JButton("Update");
 				okButton.addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent arg0) {
+						if (e == null) {
+							return;
+						}
 						BigDecimal salary;
 						
 						if (textName.getText().length() > 0) {

@@ -1,6 +1,7 @@
 target/
-TODO
 .project
 .classpath
 .settings/
 .gitignore
+*~
+*.bak
