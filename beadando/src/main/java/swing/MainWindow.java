@@ -118,6 +118,7 @@ public class MainWindow {
 		btnWeekWorkSessions.setEnabled(false);
 		comboBoxWeek.setEnabled(true);
 		comboBoxWeek.setModel(new WeekComboBoxModel(MainWindow.this));
+		textProblems.setText("");
 	}
 
 	public void updateWeekLabels() {
