@@ -4,13 +4,12 @@ import java.math.BigDecimal;
 
 /**
  * Exception thrown when calculating an employee's salary in a specific month and the employee breaks some of the rules declared in
- * the {@code Calculations.getSalaryInAMonthByEmployeeId(int id, Date date)}.
- * @see Calculations#getSalaryInAMonthByEmployeeId(int, java.sql.Date)
+ * the {@link Calculations#getSalaryInAMonthByEmployeeId(int, java.sql.Date)}.
  */
 public class SalaryException extends Exception {
 	
 	/**
-	 * The {@code employee}'s salary.
+	 * The {@code Employee}'s salary.
 	 */
 	private BigDecimal salary;
 	
@@ -22,7 +21,7 @@ public class SalaryException extends Exception {
 	/**
 	 * Constructor for the exception.
 	 * 
-	 * @param salary the employee's salary
+	 * @param salary the {@code Employee}'s salary
 	 * @param errors the broken rules' messages copied into one string
 	 */
 	public SalaryException(BigDecimal salary, String errors) {
@@ -31,8 +30,9 @@ public class SalaryException extends Exception {
 	}
 	
 	/**
-	 * Returns the employee's salary.
-	 * @return the employee's salary
+	 * Returns the {@code Employee}'s salary.
+	 * 
+	 * @return the {@code Employee}'s salary
 	 */
 	public BigDecimal getSalary() {
 		return salary;

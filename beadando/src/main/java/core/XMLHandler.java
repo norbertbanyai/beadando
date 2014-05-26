@@ -31,11 +31,12 @@ import dao.Employee;
 
 /**
  * The core of the class {@code DataLoader}. Provides the XML handling.
+ * User class: {@link DataLoader}.
  */
 public class XMLHandler {
 	
 	/**
-	 * The XML's path.
+	 * The path of the XML file.
 	 */
 	private static String XML_NAME;
 
@@ -47,7 +48,7 @@ public class XMLHandler {
 	 */
 	private static final class EmployeeXMLInputHandler extends DefaultHandler {
 		/**
-		 * List of employees.
+		 * List of {@code Employee}s.
 		 */
 		private List<Employee> employees;
 		

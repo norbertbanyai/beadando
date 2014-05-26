@@ -15,6 +15,8 @@ import static core.Main.logger;
 
 /**
  * Class that does the importing and exporting of the employees' table in the database into/from an XML file.
+ * 
+ * @see XMLHandler
  */
 public class DataLoader {
 	
@@ -31,8 +33,8 @@ public class DataLoader {
 	}
 	
 	/**
-	 * Removes the foreign key set on the {@code worksessions} table which references on the
-	 * employees table on {@code employee_id}. This is needed to be able to execute {@link #deleteEmployeesFromDatabase()}.
+	 * Removes the foreign key set on the database table: {@code worksessions} which references on the
+	 * database table {@code employees} on {@code employee_id}. This is needed to be able to execute {@link #deleteEmployeesFromDatabase()}.
 	 */
 	private static void removeForeignKeyFromWorkSessions() {
 		try(Statement stmt = ConnectionHelper.getConnection().createStatement()) {
@@ -44,8 +46,8 @@ public class DataLoader {
 	}
 	
 	/**
-	 * Adds the foreign key removed in {@link #removeForeignKeyFromWorkSessions()} to the {@code worksessions} table references
-	 * the employees table on {@code employee_id}.
+	 * Adds the foreign key removed in {@link #removeForeignKeyFromWorkSessions()} to the database table {@code worksessions} references
+	 * the database table {@code employees} on {@code employee_id}.
 	 */
 	private static void addForeignKeyToWorkSessions() {
 		try(Statement stmt = ConnectionHelper.getConnection().createStatement()) {
@@ -57,10 +59,10 @@ public class DataLoader {
 	}
 	
 	/**
-	 * Imports employees into the {@code employees} table from a specific XML file, and deletes the current content of {@code employees} table.
+	 * Imports employees into the {@code employees} table from a specific XML file, and deletes the current content of database table {@code employees}.
 	 * <p>Does not execute the import if the XML file is corrupt.</p>
 	 * 
-	 * @param xmlPath the absolute path of the XML file we want to load the employees from
+	 * @param xmlPath the path of the XML file we want to load the employees from
 	 */
 	public static void importEmployees(String xmlPath) {
 		logger.info("loading employees from xml, path = " + xmlPath);
@@ -114,9 +116,9 @@ public class DataLoader {
 	}
 	
 	/**
-	 * Exports the {@code employees} table's content into an XML file.
+	 * Exports the content of the database table {@code employees} into an XML file.
 	 * 
-	 * @param xmlPath the absolute path of the XML file we want to export the employees to
+	 * @param xmlPath the path of the XML file we want to export the employees to
 	 */
 	public static void exportEmployees(String xmlPath) {
 		List<Employee> list = new ArrayList<>();

@@ -21,7 +21,7 @@ import dao.impl.ConnectionHelper;
 import static core.Main.logger;
 
 /**
- * Class implementing the main algorithms used in this program, to calculate sick days, days taken off, worked days, and even salary
+ * Class implementing the main algorithms used in this program to calculate sick days, days taken off, worked days, and even salary
  * from several viewpoints (yearly, monthly, weekly).
  * 
  * @see Employee
@@ -94,7 +94,7 @@ public class Calculations {
 	}
 	
 	/**
-	 * Returns a specific employee's sick days on a specific week.
+	 * Returns the number of a specific employee's sick days on a specific week.
 	 * <p>Saturday and Sunday cannot be sick day.</p>
 	 * <p>Work day is overwritten by a sick day, sick days are overwritten by free days, <b>unless it's weekend, then it will not count as neither work day/sick day nor day off</b></p>
 	 * 
@@ -154,7 +154,7 @@ public class Calculations {
 	}
 	
 	/**
-	 * Returns an employee's worked hours on a specific week.
+	 * Returns the number of a specific employee's worked hours on a specific week.
 	 * 
 	 * @param id the employee's id
 	 * @param date the date that provides the week (can be any day on that week) we want to analyze
@@ -222,7 +222,7 @@ public class Calculations {
 	}
 	
 	/**
-	 * Returns an employee's worked hours in a specific month.
+	 * Returns the number of a specific employee's worked hours in a specific month.
 	 * 
 	 * @param id the employee's id
 	 * @param date the date that provides the month (can be any day in that month) we want to analyze
@@ -289,7 +289,7 @@ public class Calculations {
 	}
 	
 	/**
-	 * Returns a specific employee's sick days in the current year.
+	 * Returns the number of a specific employee's sick days in the current year.
 	 * <p>Work days are overwritten by sick days unless it's weekend, then it's not counted for anywhere.</p>
 	 * <p>Sick days are overwritten by free days unless it's weekend, then it's not counted for anywhere.</p>
 	 * 
@@ -341,7 +341,7 @@ public class Calculations {
 	}
 	
 	/**
-	 * Returns a specific employee's sick days in a specific month.
+	 * Returns the number of a specific employee's sick days in a specific month.
 	 * <p>Work days are overwritten by sick days unless it's weekend, then it's not counted for anywhere.</p>
 	 * <p>Sick days are overwritten by free days unless it's weekend, then it's not counted for anywhere.</p>
 	 * 
@@ -395,7 +395,7 @@ public class Calculations {
 	}
 	
 	/**
-	 * Returns a specific employee's free days in the current year.
+	 * Returns the number of a specific employee's free days in the current year.
 	 * <p>Work days are overwritten by sick days unless it's weekend, then it's not counted for anywhere.</p>
 	 * <p>Sick days are overwritten by free days unless it's weekend, then it's not counted for anywhere.</p>
 	 * 
@@ -437,7 +437,7 @@ public class Calculations {
 	}
 	
 	/**
-	 * Returns a specific employee's free days in a specific month.
+	 * Returns the number of a specific employee's free days in a specific month.
 	 * <p>Work days are overwritten by sick days unless it's weekend, then it's not counted for anywhere.</p>
 	 * <p>Sick days are overwritten by free days unless it's weekend, then it's not counted for anywhere.</p>
 	 * 
@@ -481,7 +481,7 @@ public class Calculations {
 	}
 	
 	/**
-	 * Returns the salary earned by the specific employee in a specific month.
+	 * Returns the salary earned by a specific {@code Employee}'s id in a specific month.
 	 * <p>Work days are overwritten by sick days.</p>
 	 * <p>Sick days are overwritten by free days.</p>
 	 * <p>If a sick day is on weekend then it does not get into the final salary.</p>
