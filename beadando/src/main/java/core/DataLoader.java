@@ -70,7 +70,9 @@ public class DataLoader {
 		if (list != null) {
 			logger.info("loaded employees from xml, path = " + xmlPath);
 			try {
+				logger.info("setting autocommit=false to prevent corruption in case of an exception");
 				ConnectionHelper.getConnection().setAutoCommit(false);
+				logger.info("setting autocommit=false was successful");
 			} catch (SQLException | IOException e1) {
 				logger.error("error while setting autocommit=false to import employees", e1);
 				throw new PersistentLayerException(e1);
@@ -82,10 +84,12 @@ public class DataLoader {
 			DataLoader.deleteEmployeesFromDatabase();
 			logger.info("deleted employees from the database");
 			try(PreparedStatement pstmt = ConnectionHelper.getConnection().prepareStatement("insert into employees values(?, ?, ?, ?, ?)")) {
+				logger.info("loading employees into the database");
 				for (Employee employee : list) {
 					Employee.employeeToPreparedStatement(pstmt, employee);
 					pstmt.executeUpdate();
 				}
+				logger.info("loaded " + list.size() + " employees successfully into the databse");
 				logger.info("adding foreign key to worksessions");
 				DataLoader.addForeignKeyToWorkSessions();
 				logger.info("added foreign key to worksessions");
