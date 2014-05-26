@@ -1,6 +1,7 @@
 package swing;
 
 import java.awt.BorderLayout;
+
 import java.awt.Color;
 import java.awt.FlowLayout;
 
@@ -28,6 +29,7 @@ import java.awt.event.ActionEvent;
 import java.math.BigDecimal;
 import java.sql.Date;
 import java.text.SimpleDateFormat;
+import static core.Main.logger;
 
 public class EmployeeInsert extends JDialog {
 
@@ -48,7 +50,7 @@ public class EmployeeInsert extends JDialog {
 			dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 			dialog.setVisible(true);
 		} catch (Exception e) {
-			e.printStackTrace();
+			logger.error("Error happened in EmployeeInsert.main()", e);
 		}
 	}
 
@@ -199,6 +201,7 @@ public class EmployeeInsert extends JDialog {
 							JOptionPane.showMessageDialog(EmployeeInsert.this, "Insert was successful");
 							EmployeeInsert.this.dispose();
 						} catch (ExistingEmployeeException e1) {
+							logger.warn("Tried to insert an existing employee with id = " + e1.getEmployeeId() + " in EmployeeInsert");
 							JOptionPane.showMessageDialog(EmployeeInsert.this,
 									"Existing employee with id = " + e1.getEmployeeId(), "Error", JOptionPane.ERROR_MESSAGE);
 						}

@@ -20,6 +20,7 @@ import java.awt.event.ActionEvent;
 import javax.swing.JLabel;
 import java.awt.Font;
 import java.awt.Color;
+import static core.Main.logger;
 
 public class Import extends JDialog {
 
@@ -39,7 +40,7 @@ public class Import extends JDialog {
 			dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 			dialog.setVisible(true);
 		} catch (Exception e) {
-			e.printStackTrace();
+			logger.error("Error happened in Import.Main()", e);
 		}
 	}
 
@@ -69,6 +70,7 @@ public class Import extends JDialog {
 							JOptionPane.showMessageDialog(Import.this, "Import was successful");
 							Import.this.dispose();
 						} catch(PersistentLayerException exc) {
+							logger.error("Error happened while trying to import employees in Import", exc);
 							JOptionPane.showMessageDialog(Import.this,
 									exc.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
 						}

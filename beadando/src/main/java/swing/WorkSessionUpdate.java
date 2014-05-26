@@ -37,6 +37,7 @@ import java.text.SimpleDateFormat;
 
 import javax.swing.JComboBox;
 import javax.swing.LayoutStyle.ComponentPlacement;
+import static core.Main.logger;
 
 public class WorkSessionUpdate extends JDialog {
 
@@ -61,7 +62,7 @@ public class WorkSessionUpdate extends JDialog {
 			dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 			dialog.setVisible(true);
 		} catch (Exception e) {
-			e.printStackTrace();
+			logger.error("Error happened in WorkSessionUpdate.Main()", e);
 		}
 	}
 	

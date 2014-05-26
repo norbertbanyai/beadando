@@ -23,6 +23,8 @@ import javax.swing.JComboBox;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 
+import static core.Main.logger;
+
 public class EmployeeDelete extends JDialog {
 
 	private final JPanel contentPanel = new JPanel();
@@ -43,8 +45,8 @@ public class EmployeeDelete extends JDialog {
 			EmployeeDelete dialog = new EmployeeDelete(null);
 			dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 			dialog.setVisible(true);
-		} catch (Exception e) {
-			e.printStackTrace();
+		} catch (Exception e1) {
+			logger.error("EmployeeDelete error:", e1);
 		}
 	}
 
@@ -84,6 +86,7 @@ public class EmployeeDelete extends JDialog {
 							JOptionPane.showMessageDialog(EmployeeDelete.this, "Delete was successful");
 							EmployeeDelete.this.dispose();
 						} catch(PersistentLayerException e2) {
+							logger.error("Error happened while trying to delete an employee.", e2);
 							JOptionPane.showMessageDialog(EmployeeDelete.this,
 									e2.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
 						}

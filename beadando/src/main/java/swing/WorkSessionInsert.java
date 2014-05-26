@@ -36,6 +36,7 @@ import java.text.SimpleDateFormat;
 
 import javax.swing.LayoutStyle.ComponentPlacement;
 import javax.swing.JRadioButton;
+import static core.Main.logger;
 
 public class WorkSessionInsert extends JDialog {
 
@@ -60,7 +61,7 @@ public class WorkSessionInsert extends JDialog {
 			dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 			dialog.setVisible(true);
 		} catch (Exception e) {
-			e.printStackTrace();
+			logger.error("Error happened in WorkSessionInsert.Main()", e);
 		}
 	}
 

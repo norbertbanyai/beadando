@@ -6,19 +6,11 @@ import javax.swing.JFrame;
 import javax.swing.JMenuBar;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
-import javax.swing.JScrollPane;
-import javax.swing.UIManager;
 
 import java.awt.Font;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 
-import javax.swing.JTable;
-
-import java.awt.BorderLayout;
-
-import javax.swing.GroupLayout;
-import javax.swing.GroupLayout.Alignment;
 import javax.swing.JButton;
 
 import dao.Employee;
@@ -28,8 +20,6 @@ import dao.PersistentLayerException;
 import dao.WorkSession;
 import dao.impl.ConnectionHelper;
 
-import javax.swing.LayoutStyle.ComponentPlacement;
-import javax.swing.JScrollBar;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JTextField;
@@ -52,6 +42,7 @@ import org.joda.time.LocalDate;
 
 import swing.WorksessionsDialog.Type;
 import javax.swing.JTextArea;
+import static core.Main.logger;
 
 public class MainWindow {
 
@@ -144,8 +135,8 @@ public class MainWindow {
 				try {
 					MainWindow window = new MainWindow();
 					window.mainFrame.setVisible(true);
-				} catch (Exception e) {
-					e.printStackTrace();
+				} catch (Exception e1) {
+					logger.error("Error happened while trying to start the MainWindow", e1);
 				}
 			}
 		});
@@ -409,6 +400,7 @@ public class MainWindow {
 						}
 					}
 				} catch (SQLException | IOException e) {
+					logger.error("Error happened whene tried to show the Yearly work sessions in the MainWindow", e);
 					throw new PersistentLayerException(e);
 				}
 				new WorksessionsDialog(null, Type.YEAR, e, null)
@@ -440,6 +432,7 @@ public class MainWindow {
 						}
 					}
 				} catch (SQLException | IOException e) {
+					logger.error("Error happened whene tried to show the Monthly work sessions in the MainWindow", e);
 					throw new PersistentLayerException(e);
 				}
 				new WorksessionsDialog(null, Type.YEARMONTH, e, month.getDate())
@@ -475,6 +468,7 @@ public class MainWindow {
 						}
 					}
 				} catch (SQLException | IOException e) {
+					logger.error("Error happened whene tried to show the Weekly work sessions in the MainWindow", e);
 					throw new PersistentLayerException(e);
 				}
 				new WorksessionsDialog(null, Type.WEEK, e, week.getDate())

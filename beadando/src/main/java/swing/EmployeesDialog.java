@@ -19,6 +19,7 @@ import java.util.List;
 import javax.swing.GroupLayout;
 import javax.swing.GroupLayout.Alignment;
 import javax.swing.LayoutStyle.ComponentPlacement;
+import static core.Main.logger;
 
 public class EmployeesDialog extends JDialog {
 
@@ -38,7 +39,7 @@ public class EmployeesDialog extends JDialog {
 			dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 			dialog.setVisible(true);
 		} catch (Exception e) {
-			e.printStackTrace();
+			logger.error("Error happened in EmployeesDialog.Main()", e);
 		}
 	}
 

@@ -31,6 +31,7 @@ import javax.swing.GroupLayout.Alignment;
 import javax.swing.LayoutStyle.ComponentPlacement;
 
 import org.joda.time.LocalDate;
+import static core.Main.logger;
 
 public class WorksessionsDialog extends JDialog {
 
@@ -60,7 +61,7 @@ public class WorksessionsDialog extends JDialog {
 			dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 			dialog.setVisible(true);
 		} catch (Exception e) {
-			e.printStackTrace();
+			logger.error("Error happened in WorksessionsDialog.Main()", e);
 		}
 	}
 
@@ -90,6 +91,7 @@ public class WorksessionsDialog extends JDialog {
 						}
 					}
 				} catch (SQLException | IOException e) {
+					logger.error("Error happened in WorksessionsDialog: case YEAR", e);
 					throw new PersistentLayerException(e);
 				}
 				list = listTemp;
@@ -106,6 +108,7 @@ public class WorksessionsDialog extends JDialog {
 						}
 					}
 				} catch (SQLException | IOException e) {
+					logger.error("Error happened in WorksessionsDialog: case YEARMONTH", e);
 					throw new PersistentLayerException(e);
 				}
 				list = listTemp2;
@@ -127,6 +130,7 @@ public class WorksessionsDialog extends JDialog {
 						}
 					}
 				} catch (SQLException | IOException e) {
+					logger.error("Error happened in WorksessionsDialog: case WEEK", e);
 					throw new PersistentLayerException(e);
 				}
 				list = listTemp3;
@@ -146,12 +150,10 @@ public class WorksessionsDialog extends JDialog {
 				contentPanel.add(table, BorderLayout.CENTER);
 				contentPanel.add(new JScrollPane(table));
 			} else {
-//				list = l;
 				table.setModel(new WorkSessionJTableModel(list));
 				contentPanel.add(table, BorderLayout.CENTER);
 				contentPanel.add(new JScrollPane(table));
 				okButton = new JButton("Refresh");
-//				okButton.setEnabled(false);
 			}
 			
 		}
@@ -176,6 +178,7 @@ public class WorksessionsDialog extends JDialog {
 									}
 								}
 							} catch (SQLException | IOException e) {
+								logger.error("Error happened while trying to refresh the table in case YEAR", e);
 								throw new PersistentLayerException(e);
 							}
 							list = listTemp;
@@ -192,6 +195,7 @@ public class WorksessionsDialog extends JDialog {
 									}
 								}
 							} catch (SQLException | IOException e) {
+								logger.error("Error happened while trying to refresh the table in case YEARMONTH", e);
 								throw new PersistentLayerException(e);
 							}
 							list = listTemp2;
@@ -213,6 +217,7 @@ public class WorksessionsDialog extends JDialog {
 									}
 								}
 							} catch (SQLException | IOException e) {
+								logger.error("Error happened while trying to refresh the table in case WEEK", e);
 								throw new PersistentLayerException(e);
 							}
 							list = listTemp3;

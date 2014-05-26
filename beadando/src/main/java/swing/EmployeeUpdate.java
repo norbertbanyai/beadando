@@ -26,6 +26,7 @@ import java.awt.event.ActionEvent;
 import java.math.BigDecimal;
 
 import javax.swing.JComboBox;
+import static core.Main.logger;
 
 public class EmployeeUpdate extends JDialog {
 
@@ -44,8 +45,8 @@ public class EmployeeUpdate extends JDialog {
 			EmployeeUpdate dialog = new EmployeeUpdate(null);
 			dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 			dialog.setVisible(true);
-		} catch (Exception e) {
-			e.printStackTrace();
+		} catch (Exception e1) {
+			logger.error("Error happened in EmployeeUpdate.Main()", e1);
 		}
 	}
 	
@@ -185,6 +186,7 @@ public class EmployeeUpdate extends JDialog {
 							JOptionPane.showMessageDialog(EmployeeUpdate.this, "Update was successful");
 							EmployeeUpdate.this.dispose();
 						} catch(PersistentLayerException e) {
+							logger.error("Error happened while trying to update an employee in EmployeeUpdate", e);
 							JOptionPane.showMessageDialog(EmployeeUpdate.this,
 									e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
 						}

@@ -26,6 +26,7 @@ import javax.swing.JComboBox;
 
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
+import static core.Main.logger;
 
 public class WorkSessionDelete extends JDialog {
 
@@ -48,7 +49,7 @@ public class WorkSessionDelete extends JDialog {
 			dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 			dialog.setVisible(true);
 		} catch (Exception e) {
-			e.printStackTrace();
+			logger.error("Error happened in WorkSessionDelete.Main()", e);
 		}
 	}
 
@@ -103,6 +104,7 @@ public class WorkSessionDelete extends JDialog {
 							JOptionPane.showMessageDialog(WorkSessionDelete.this, "Delete was successful");
 							WorkSessionDelete.this.dispose();
 						} catch(PersistentLayerException e2) {
+							logger.error("Error happened while trying to delete a work session in WorkSessionDelete", e2);
 							JOptionPane.showMessageDialog(WorkSessionDelete.this,
 									e2.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
 						}

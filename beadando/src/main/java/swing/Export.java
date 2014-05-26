@@ -17,6 +17,7 @@ import dao.PersistentLayerException;
 
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
+import static core.Main.logger;
 
 public class Export extends JDialog {
 
@@ -36,7 +37,7 @@ public class Export extends JDialog {
 			dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 			dialog.setVisible(true);
 		} catch (Exception e) {
-			e.printStackTrace();
+			logger.error("Error happened in Export.Main()", e);
 		}
 	}
 
@@ -65,6 +66,7 @@ public class Export extends JDialog {
 							JOptionPane.showMessageDialog(Export.this, "Export was successful");
 							Export.this.dispose();
 						} catch(PersistentLayerException exc) {
+							logger.error("Error happened while trying to export employees in Export", exc);
 							JOptionPane.showMessageDialog(Export.this,
 									exc.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
 						}
